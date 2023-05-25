@@ -5,6 +5,8 @@ import com.devinhouse.veiculosapi.repository.VeiculoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class VeiculoService {
     @Autowired
@@ -17,6 +19,10 @@ public class VeiculoService {
         }
         veiculo = repository.save(veiculo);
         return veiculo;
+    }
+
+    public List<Veiculo> listarVeiculos() {
+        return repository.findAll();
     }
 
 

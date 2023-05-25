@@ -8,12 +8,10 @@ import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping
@@ -29,6 +27,13 @@ public class VeiculosController {
         veiculo = veiculoService.inserir(veiculo);
         VeiculoResponse veiculoResponse = modelMapper.map(veiculo, VeiculoResponse.class);
         return ResponseEntity.created(URI.create(veiculoRequest.getPlaca())).body(veiculoResponse);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<VeiculoResponse>> consultarVeiculos() {
+        List<Veiculo> veiculos = veiculoService.listarVeiculos();
+        List<VeiculoResponse> veiculosResponse = veiculos.stream().map(v -> modelMapper.map(v, VeiculoResponse.class)).toList();
+        return ResponseEntity.ok(veiculosResponse);
     }
 
 
