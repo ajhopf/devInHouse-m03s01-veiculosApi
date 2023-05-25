@@ -54,7 +54,8 @@ public class VeiculoService {
         Veiculo veiculo = veiculoOptional.get();
         Integer multas = veiculo.getQtdMultas() + 1;
         veiculo.setQtdMultas(multas);
-        veiculo = repository.save(veiculo);
+        repository.save(veiculo);
+//        veiculo = repository.save(veiculo);
         return veiculo;
     }
 }

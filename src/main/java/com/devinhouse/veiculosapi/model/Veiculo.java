@@ -18,4 +18,12 @@ public class Veiculo {
     private Integer anoDeFabricacao;
     private Integer qtdMultas;
 
+    public Veiculo(String placa, String tipo, String cor, Integer anoDeFabricacao) {
+        this.placa = placa;
+        this.tipo = tipo;
+        this.cor = cor;
+        this.anoDeFabricacao = anoDeFabricacao;
+        this.qtdMultas = 0;
+    }
+
 }
