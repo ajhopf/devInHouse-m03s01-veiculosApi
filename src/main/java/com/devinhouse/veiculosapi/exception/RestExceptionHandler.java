@@ -13,15 +13,22 @@ import java.util.Map;
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(RegistroExistenteException.class)
     public ResponseEntity<Object> handleRegistroExistenteException(RegistroExistenteException e) {
-        Map<String, String> retorno = new HashMap<>();
-        retorno.put("erro", "Registro já cadastrado! Placa: " + e.getMessage());
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(retorno);
+        Map<String, String> response = new HashMap<>();
+        response.put("erro", "Registro já cadastrado! Placa: " + e.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
     @ExceptionHandler(VeiculoNaoEncontradoException.class)
     public ResponseEntity<Object> handleRegistroNaoEncontradoException(VeiculoNaoEncontradoException e) {
-        Map<String, String> retorno = new HashMap<>();
-        retorno.put("erro", "Placa não encontrada: " + e.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(retorno);
+        Map<String, String> response = new HashMap<>();
+        response.put("erro", "Placa não encontrada: " + e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler(VeiculoComMultasException.class)
+    public ResponseEntity<Object> handleVeiculoComMultasException(VeiculoComMultasException e) {
+        Map<String, String> response = new HashMap<>();
+        response.put("erro", "Veículo não deletado pois possui 1 ou mais multas cadastradas. Placa: " + e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 }

@@ -43,5 +43,18 @@ public class VeiculosController {
         return ResponseEntity.ok(veiculoResponse);
     }
 
+    @DeleteMapping("/{placa}")
+    public ResponseEntity deletarVeiculo(@PathVariable String placa) {
+        veiculoService.excluir(placa);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{placa}/multas")
+    public ResponseEntity<VeiculoResponse> adicionarMulta(@PathVariable String placa) {
+        Veiculo veiculo = veiculoService.adicionarMulta(placa);
+        VeiculoResponse veiculoResponse = modelMapper.map(veiculo, VeiculoResponse.class);
+        return ResponseEntity.ok().body(veiculoResponse);
+    }
+
 
 }
