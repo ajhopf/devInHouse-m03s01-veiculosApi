@@ -1,6 +1,7 @@
 package com.devinhouse.veiculosapi.service;
 
 import com.devinhouse.veiculosapi.exception.RegistroExistenteException;
+import com.devinhouse.veiculosapi.exception.VeiculoNaoEncontradoException;
 import com.devinhouse.veiculosapi.model.Veiculo;
 import com.devinhouse.veiculosapi.repository.VeiculoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,5 +27,9 @@ public class VeiculoService {
         return repository.findAll();
     }
 
+    public Veiculo listarVeiculoPelaPlaca(String placa) {
+        return repository.findById(placa)
+                .orElseThrow(() -> new VeiculoNaoEncontradoException(placa));
+    }
 
 }

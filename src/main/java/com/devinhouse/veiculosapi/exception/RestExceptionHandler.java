@@ -17,4 +17,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         retorno.put("erro", "Registro já cadastrado! Placa: " + e.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(retorno);
     }
+
+    @ExceptionHandler(VeiculoNaoEncontradoException.class)
+    public ResponseEntity<Object> handleRegistroNaoEncontradoException(VeiculoNaoEncontradoException e) {
+        Map<String, String> retorno = new HashMap<>();
+        retorno.put("erro", "Placa não encontrada: " + e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(retorno);
+    }
 }

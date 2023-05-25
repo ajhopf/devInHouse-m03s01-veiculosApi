@@ -36,5 +36,12 @@ public class VeiculosController {
         return ResponseEntity.ok(veiculosResponse);
     }
 
+    @GetMapping("/{placa}")
+    public ResponseEntity<VeiculoResponse> consultarPorPlaca(@PathVariable String placa) {
+        Veiculo veiculo = veiculoService.listarVeiculoPelaPlaca(placa);
+        VeiculoResponse veiculoResponse = modelMapper.map(veiculo, VeiculoResponse.class);
+        return ResponseEntity.ok(veiculoResponse);
+    }
+
 
 }
