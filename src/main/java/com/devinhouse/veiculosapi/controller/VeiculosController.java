@@ -14,7 +14,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping("/api/veiculos")
 public class VeiculosController {
     @Autowired
     private VeiculoService veiculoService;
