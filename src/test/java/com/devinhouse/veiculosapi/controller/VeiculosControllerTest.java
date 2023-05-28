@@ -2,6 +2,7 @@ package com.devinhouse.veiculosapi.controller;
 
 import com.devinhouse.veiculosapi.dtos.VeiculoRequest;
 import com.devinhouse.veiculosapi.exception.RegistroExistenteException;
+import com.devinhouse.veiculosapi.exception.VeiculoComMultasException;
 import com.devinhouse.veiculosapi.exception.VeiculoNaoEncontradoException;
 import com.devinhouse.veiculosapi.model.Veiculo;
 import com.devinhouse.veiculosapi.service.VeiculoService;
@@ -22,8 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -116,6 +116,33 @@ class VeiculosControllerTest {
         void consultarPorPlaca_naoCadastrada() throws Exception {
             Mockito.when(service.listarVeiculoPelaPlaca(Mockito.anyString())).thenThrow(VeiculoNaoEncontradoException.class);
             mockMvc.perform(get("/api/veiculos/{placa}", "ABC-1234").contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isNotFound());
+        }
+    }
+
+    @Nested
+    @DisplayName("Método: deletarVeiculo")
+    class deletarVeiculo {
+        @Test
+        @DisplayName("Quando placa for encontrada e não tiver multas cadastradas, deve excluir o registro")
+        void deletarVeiculo() throws Exception {
+            mockMvc.perform(delete("/api/veiculos/{placa}", "ABC-1234").contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isNoContent());
+        }
+
+        @Test
+        @DisplayName("Quando veículo tiver multas cadastradas, deve retornar erro")
+        void deletarVeiculo_veiculoComMultas() throws Exception {
+            Mockito.doThrow(VeiculoComMultasException.class).when(service).excluir(Mockito.anyString());
+            mockMvc.perform(delete("/api/veiculos/{placa}", "ABC-1234").contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("Quando placa não for encontrada, deve retornar erro")
+        void deletarVeiculo_placaNaoEncontrada() throws Exception {
+            Mockito.doThrow(VeiculoNaoEncontradoException.class).when(service).excluir(Mockito.anyString());
+            mockMvc.perform(delete("/api/veiculos/{placa}", "ABC-1234").contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isNotFound());
         }
     }
