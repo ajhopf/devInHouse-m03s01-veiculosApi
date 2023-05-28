@@ -21,4 +21,13 @@ public class VeiculoRequest {
     @NotNull(message = "Ano de Fabricação deve ser informado")
     private Integer anoDeFabricacao;
     private Integer qtdMultas;
+
+    public VeiculoRequest(String placa, String tipo, String cor, Integer anoDeFabricacao) {
+        this.placa = placa;
+        this.tipo = tipo;
+        this.cor = cor;
+        this.anoDeFabricacao = anoDeFabricacao;
+        this.qtdMultas = 0;
+    }
+
 }
