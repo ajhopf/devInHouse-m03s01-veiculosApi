@@ -146,4 +146,29 @@ class VeiculosControllerTest {
                     .andExpect(status().isNotFound());
         }
     }
+
+    @Nested
+    @DisplayName("Método: adicionarMulta")
+    class adicionarMulta {
+        @Test
+        @DisplayName("Quando placa for encontrada, deve adicionar multa ao registro")
+        void adicionarMulta() throws Exception {
+            Veiculo veiculo = new Veiculo("IXB-1234", "carro", "prata", 2016, 1);
+            Integer qtdMultasInicial = veiculo.getQtdMultas();
+            veiculo.setQtdMultas(qtdMultasInicial + 1);
+            Mockito.when(service.adicionarMulta(Mockito.anyString())).thenReturn(veiculo);
+            mockMvc.perform(put("/api/veiculos/{placa}/multas", veiculo.getPlaca()).contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.placa", is(notNullValue())))
+                    .andExpect(jsonPath("$.qtdMultas", is(qtdMultasInicial + 1)));
+        }
+
+        @Test
+        @DisplayName("Quando placa não for encontrada, deve retornar erro")
+        void adicionarMulta_placaNaoEncontrada() throws Exception {
+            Mockito.when(service.adicionarMulta(Mockito.anyString())).thenThrow(VeiculoNaoEncontradoException.class);
+            mockMvc.perform(put("/api/veiculos/{placa}/multas", "ABC-1234").contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isNotFound());
+        }
+    }
 }
