@@ -2,6 +2,7 @@ package com.devinhouse.veiculosapi.controller;
 
 import com.devinhouse.veiculosapi.dtos.VeiculoRequest;
 import com.devinhouse.veiculosapi.exception.RegistroExistenteException;
+import com.devinhouse.veiculosapi.exception.VeiculoNaoEncontradoException;
 import com.devinhouse.veiculosapi.model.Veiculo;
 import com.devinhouse.veiculosapi.service.VeiculoService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -94,6 +95,28 @@ class VeiculosControllerTest {
             mockMvc.perform(get("/api/veiculos").contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(empty())));
+        }
+    }
+
+    @Nested
+    @DisplayName("Método: consultarPorPlaca")
+    class consultarPorPlaca {
+        @Test
+        @DisplayName("Quando placa estiver cadastrada, deve retornar o veículo")
+        void consultarPorPlaca() throws Exception {
+            Veiculo veiculo = new Veiculo("IXB-1234", "carro", "prata", 2016);
+            Mockito.when(service.listarVeiculoPelaPlaca(Mockito.anyString())).thenReturn(veiculo);
+            mockMvc.perform(get("/api/veiculos/{placa}", veiculo.getPlaca()).contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.placa", is(veiculo.getPlaca())));
+        }
+
+        @Test
+        @DisplayName("Quando placa não estiver cadastrada, deve retornar erro")
+        void consultarPorPlaca_naoCadastrada() throws Exception {
+            Mockito.when(service.listarVeiculoPelaPlaca(Mockito.anyString())).thenThrow(VeiculoNaoEncontradoException.class);
+            mockMvc.perform(get("/api/veiculos/{placa}", "ABC-1234").contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isNotFound());
         }
     }
 }
